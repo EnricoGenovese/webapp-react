@@ -1,4 +1,3 @@
-// Creazione della GlobalContext che conterrà tutte le chiamate API al server
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
@@ -11,7 +10,7 @@ const GlobalContext = createContext();  //crea il Context e gli do il nome Globa
 const GlobalProvider = ({ children }) => {
     // useState dei book:
     const [movies, setMovies] = useState([]);
-
+    const [singleMovie, setSingleMovie] = useState();
 
     /* Configuro lo useEffect per chiamare l'API per i film popolari solo al caricamento della pagina: */
     useEffect(() => {
@@ -32,9 +31,24 @@ const GlobalProvider = ({ children }) => {
             });
     }
 
+    function getSingleMovie(id) {
+        axios.get(apiUrl + "/movies/" + id)
+            .then((res) => {
+                setSingleMovie(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+            .finally(() => {
+                console.log("Done");
+
+            });
+    }
+
+
     // Oggetto contenente i dati da passare al value per offrirli ai Consumer (i componenti racchiusi nel Provider di GLobalContext):
     const collectionData = {
-        movies
+        movies, setMovies, singleMovie, getSingleMovie
     }
 
     return (
